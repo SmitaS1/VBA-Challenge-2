@@ -9,6 +9,6 @@ There are total of 6 files
   VBA_Challenge2_script
   
   ReadMe
-  VBA_Challenge2_Screenshot_results1
-  VBA_Challenge2_Screenshot_results2
-  VBA_Challenge2_Screenshot_results3
+  VBA_Challenge2_Screenshot_results2018
+  VBA_Challenge2_Screenshot_results2019
+  VBA_Challenge2_Screenshot_results2020
