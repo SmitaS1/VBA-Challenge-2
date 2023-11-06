@@ -1,0 +1,142 @@
+Sub year_stock_data()
+
+'Declaring the worksheet variables
+
+Dim ws As Worksheet
+Dim worksheetname As String
+
+'Loop across worksheet to eliminate repeating task for each worksheet
+
+For Each ws In Worksheets
+
+'get the name of current active worksheet and set the column heading across the worksheet
+
+    worksheetname = ws.Name
+    
+    Worksheets(worksheetname).Range("i1").Value = "Ticker"
+    Worksheets(worksheetname).Range("j1").Value = "Yearly Change"
+    Worksheets(worksheetname).Range("k1").Value = "Percent Change"
+    Worksheets(worksheetname).Range("L1").Value = "Total Stock Volume"
+    Worksheets(worksheetname).Range("S1").Value = "Ticker"
+    Worksheets(worksheetname).Range("t1").Value = "Value"
+    Worksheets(worksheetname).Range("R2").Value = "Greatest % Increase"
+    Worksheets(worksheetname).Range("R3").Value = "Greatest % Decrease"
+    Worksheets(worksheetname).Range("R4").Value = "Greatest Total Value"
+
+'Declare the variable
+
+    Dim v_ticker As String
+    Dim v_ticker_prev As String
+
+    Dim v_row_count As Long
+    Dim v_op_price As Double
+    Dim v_cl_price As Double
+    Dim v_yearly_chg As Double
+    Dim v_tot_stk As Double
+    Dim v_pct_chg As Double
+    Dim v_i As Double
+    Dim v_ctr As Integer
+    Dim v_pct_chg_row  As Long
+    Dim v_increase As Integer
+    Dim v_decrease As Integer
+    Dim v_grt_tot_volume As Long
+  
+    
+'Initialize/reset the variable
+    v_i = 2
+    v_ticker_prev = ""
+    v_ticker = ""
+    v_ctr = 2
+    v_op_price = 0
+    v_cl_price = 0
+    v_tot_stk = 0
+    v_pct_chg = 0
+    v_row_count = 0
+    v_increase = 1
+    v_decrease = 1
+    v_grt_tot_volume = 1
+
+'check how many rows are there in the ticker column (count the row)
+
+    v_row_count = ws.Cells(Rows.Count, "A").End(xlUp).Row + 1
+    v_ticker = Worksheets(worksheetname).Cells(v_i, 1).Value
+    v_ticker_prev = v_ticker
+
+    v_op_price = v_op_price + Worksheets(worksheetname).Cells(2, 3).Value
+
+'for loop through the last row
+
+  For i = v_i To v_row_count
+        v_ticker = Worksheets(worksheetname).Cells(i, 1).Value
+        
+'compare the current ticker with previous ticker to see they are same
+
+        If v_ticker = v_ticker_prev Then
+           v_tot_stk = v_tot_stk + Worksheets(worksheetname).Cells(i, 7).Value
+           
+'when current ticker is differnt from previous row ticker
+
+        Else
+            v_cl_price = 0
+            v_yearly_chg = 0
+            v_pct_chg = 0
+            
+'calculate the cl.price, yearly change, percent change
+
+            v_cl_price = v_cl_price + Worksheets(worksheetname).Cells(i - 1, 6).Value
+            v_yearly_chg = (v_cl_price - v_op_price)
+            v_pct_chg = (v_yearly_chg / v_op_price)
+            Worksheets(worksheetname).Cells(v_ctr, 9).Value = v_ticker_prev
+            
+'change the color of yearly change column if <0 Red color else green
+
+                If v_yearly_chg < o Then
+                    Worksheets(worksheetname).Cells(v_ctr, 10).Interior.ColorIndex = 3
+                Else
+                    Worksheets(worksheetname).Cells(v_ctr, 10).Interior.ColorIndex = 4
+                End If
+                
+                If v_pct_chg < o Then
+                    Worksheets(worksheetname).Cells(v_ctr, 11).Interior.ColorIndex = 3
+                Else
+                    Worksheets(worksheetname).Cells(v_ctr, 11).Interior.ColorIndex = 4
+                End If
+'assign the calculated value to the respective coluns
+
+            Worksheets(worksheetname).Cells(v_ctr, 10).Value = v_yearly_chg
+            Worksheets(worksheetname).Cells(v_ctr, 11).Value = v_pct_chg
+            Worksheets(worksheetname).Cells(v_ctr, 11).Value = FormatPercent(Worksheets(worksheetname).Cells(v_ctr, 11))
+            Worksheets(worksheetname).Cells(v_ctr, 12).Value = v_tot_stk
+
+'increment the counter and assign/reset the value
+            v_i = i
+            v_ticker_prev = v_ticker
+            v_tot_stk = 0
+            v_ctr = v_ctr + 1
+            v_op_price = Worksheets(worksheetname).Cells(i, 3).Value
+
+        End If
+    Next i
+    
+'calculating the greatest increase and decrease and  greatest total volumne
+
+       v_increase = (WorksheetFunction.Match(WorksheetFunction.Max(Worksheets(worksheetname).Range("K2:K" & v_row_count)), Worksheets(worksheetname).Range("K2:K" & v_row_count), 0))
+       Worksheets(worksheetname).Range("S2") = Worksheets(worksheetname).Cells(v_increase + 1, "I") 'this is for greatest increase ticker
+       Worksheets(worksheetname).Range("T2") = Worksheets(worksheetname).Cells(v_increase + 1, "K") ' this is for greastest percent increase
+       Worksheets(worksheetname).Range("T2") = FormatPercent(Worksheets(worksheetname).Range("T2"))
+       
+       v_decrease = (WorksheetFunction.Match(WorksheetFunction.Min(Worksheets(worksheetname).Range("K2:K" & v_row_count)), Worksheets(worksheetname).Range("K2:K" & v_row_count), 0))
+       Worksheets(worksheetname).Range("S3") = Worksheets(worksheetname).Cells(v_decrease + 1, "I") 'this is for greatest decrease ticker
+       Worksheets(worksheetname).Range("T3") = Worksheets(worksheetname).Cells(v_decrease + 1, "K") ' this is for greastest percent decrease
+       Worksheets(worksheetname).Range("T3") = FormatPercent(Worksheets(worksheetname).Range("T3"))
+       
+       v_grt_tot_volume = (WorksheetFunction.Match(WorksheetFunction.Max(Worksheets(worksheetname).Range("L2:L" & v_row_count)), Worksheets(worksheetname).Range("L2:L" & v_row_count), 0))
+       Worksheets(worksheetname).Range("S4") = Worksheets(worksheetname).Cells(v_grt_tot_volume + 1, "I") 'this is for greatest total volume ticker
+       Worksheets(worksheetname).Range("T4") = Worksheets(worksheetname).Cells(v_grt_tot_volume + 1, "L") ' this is for total greastest volume
+
+
+Next ws
+End Sub
+
+
+
