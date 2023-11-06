@@ -10,8 +10,8 @@ There are total of 6 files
   README.txt
   # Screenshots
 ![VBA_Challenge2_Screenshot_results2018](VBA_Challenge2_Screenshot_results2018.png)
-![Image Description](VBA_Challenge2_Screenshot_results2019.png)
-![Image Description](VBA_Challenge2_Screenshot_results2020.png)
+![VBA_Challenge2_Screenshot_results2019](VBA_Challenge2_Screenshot_results2019.png)
+![VBA_Challenge2_Screenshot_results2020](VBA_Challenge2_Screenshot_results2020.png)
   VBA_Challenge2_Screenshot_results2018
   VBA_Challenge2_Screenshot_results2019
   VBA_Challenge2_Screenshot_results2020
